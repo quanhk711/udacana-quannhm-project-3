@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-user
+  labels:
+    service: api-user
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      service: api-user
+  template:
+    metadata:
+      labels:
+        service: api-user
+    spec:
+      containers:
+      - name: api-user
+        image: quanhk711/udagram-api-user:1
+        resources:
+          requests:
+            memory: "104Mi"
+            cpu: "520m"
+          limits:
+              memory: "2048Mi"
+              cpu: "1000m"
+        env:
+          - name: POSTGRES_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: mysecret
+                key: POSTGRES_USERNAME
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysecret
+                key: POSTGRES_PASSWORD
+          - name: POSTGRES_DB
+            valueFrom:
+              configMapKeyRef:
+                name: backend-user
+                key: POSTGRES_DB
+          - name: POSTGRES_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: backend-user
+                key: POSTGRES_HOST
+          - name: AWS_REGION
+            valueFrom:
+              configMapKeyRef:
+                name: backend-user
+                key: AWS_REGION
+          - name: AWS_PROFILE
+            valueFrom:
+              configMapKeyRef:
+                name: backend-user
+                key: AWS_PROFILE
+          - name: AWS_BUCKET
+            valueFrom:
+              configMapKeyRef:
+                name: backend-user
+                key: AWS_BUCKET
+          - name: JWT_SECRET
+            valueFrom:
+              configMapKeyRef:
+                name: backend-user
+                key: JWT_SECRET
+          - name: API_USER_URL
+            valueFrom:
+              configMapKeyRef:
+                name: backend-user
+                key: API_USER_URL
+        volumeMounts:
+          - name: aws-credential
+            mountPath: "/root/.aws/"
+            readOnly: true
+      volumes:
+        - name: aws-credential
+          secret:
+            secretName: aws-credentials

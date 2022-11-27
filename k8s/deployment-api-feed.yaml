@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-feed
+  labels:
+    service: api-feed
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      service: api-feed
+  template:
+    metadata:
+      labels:
+        service: api-feed
+    spec:
+      containers:
+        - image: quanhk711/udagram-api-feed:1
+          name: api-feed
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "104Mi"
+              cpu: "520m"
+            limits:
+              memory: "2048Mi"
+              cpu: "1000m"
+          env:
+            - name: POSTGRES_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mysecret
+                  key: POSTGRES_USERNAME
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysecret
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-user
+                  key: POSTGRES_DB
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-user
+                  key: POSTGRES_HOST
+            - name: AWS_REGION
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-user
+                  key: AWS_REGION
+            - name: AWS_PROFILE
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-user
+                  key: AWS_PROFILE
+            - name: AWS_BUCKET
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-user
+                  key: AWS_BUCKET
+            - name: JWT_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-user
+                  key: JWT_SECRET
+            - name: API_FEED_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-user
+                  key: API_FEED_URL
+          volumeMounts:
+            - name: aws-credentials
+              mountPath: "/root/.aws/"
+              readOnly: true
+      volumes:
+        - name: aws-credentials
+          secret:
+            secretName: aws-credentials

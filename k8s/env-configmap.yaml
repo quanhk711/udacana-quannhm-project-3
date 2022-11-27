@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-user
+data:
+  POSTGRES_DB: "postgres"
+  POSTGRES_HOST: "quannhm-alo-db.clqbffebkuni.us-east-1.rds.amazonaws.com"
+  AWS_REGION: "us-east-1"
+  AWS_PROFILE: "uda"
+  AWS_BUCKET: "quannhm-alo-1234"
+  JWT_SECRET: "123123"
+  API_USER_URL: "http://localhost:8100"
+  API_FEED_URL: "http://localhost:80"
