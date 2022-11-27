@@ -19,7 +19,7 @@ before_script:
 script:
   - docker tag udagram-api-feed quanhk711/udagram-api-feed:1
   - docker tag udagram-api-user quanhk711/udagram-api-user:1
-  - docker tag udagram-frontend quanhk711/udagram-frontend:1
+  - docker tag udagram-frontend quanhk711/udagram-frontend:v6
   - docker tag udagram-reverseproxy quanhk711/udagram-reverseproxy:1
   - docker image ls -a
 
