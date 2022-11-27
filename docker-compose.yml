@@ -1,0 +1,68 @@
+version: "3.9"
+
+services:    
+  backend-feed:
+    container_name: backend-feed
+    build:
+      context: ./udagram-api-feed
+    image: udagram-api-feed
+    networks:
+      ci-cd:
+        ipv4_address: 10.29.0.10
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: quannhm123 
+      POSTGRES_DB: postgres
+      POSTGRES_HOST: quannhm-alo-db.clqbffebkuni.us-east-1.rds.amazonaws.com
+      AWS_REGION: us-east-1
+      AWS_PROFILE: default
+      AWS_BUCKET: quannhm-alo-1234
+      JWT_SECRET: 123123
+      URL: "http://localhost:80"
+
+  backend-user:
+    container_name: backend-user
+    build:
+      context: ./udagram-api-user
+    image: udagram-api-user
+    networks:
+      ci-cd:
+        ipv4_address: 10.29.0.20
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: quannhm123 
+      POSTGRES_DB: postgres
+      POSTGRES_HOST: quannhm-alo-db.clqbffebkuni.us-east-1.rds.amazonaws.com
+      AWS_REGION: us-east-1
+      AWS_PROFILE: default
+      AWS_BUCKET: quannhm-alo-1234
+      JWT_SECRET: 123123
+      URL: "http://localhost:8100"
+
+  front-end:
+    container_name: front-end
+    build:
+      context: ./udagram-frontend
+    image: udagram-frontend
+    networks:
+      ci-cd:
+        ipv4_address: 10.29.0.30
+    ports:
+      - 8100:80
+
+  proxy:
+    container_name: proxy
+    build:
+      context: ./udagram-reverseproxy
+    image: udagram-reverseproxy
+    networks:
+      ci-cd:
+        ipv4_address: 10.29.0.40
+    ports:
+      - 8080:8080
+
+networks:
+  ci-cd:
+    ipam:
+      config:
+        - subnet: 10.29.0.0/16
